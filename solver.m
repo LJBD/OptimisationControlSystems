@@ -9,7 +9,7 @@ hold on;
 
 while(t<=T-h)
     % W miêdzyczasie sterowanie pewnie bêdzie siê zmienia³o
-    u= 7.4;
+    u= 6.4;
     %if t>T/2 u=70; end
     [tx,x] = RKIV(func, t, t+h, MSHDNS, x0, u);
     x0 = x(length(x),:)';
