@@ -1,20 +1,17 @@
-function [ output ] = solver( func, t0, T, N, MSHDNS,x0 )
+function [ tx, x ] = solverChanged( func, T, U0, MSHDNS, x0)
 
-h = (T-t0)/(N+1);
-t=t0;
+Umin=5.56;
+Umax= 9.56;
+U=repmat(U0,1,length(T));
+for j=2:2:length(U)
+    U(j)=ifelse(U(1)==Umin,Umax,Umin);
+end
 
-%Do wywalenia
-figure(1);
-hold on;
-
-while(t<=T-h)
-    % W miêdzyczasie sterowanie pewnie bêdzie siê zmienia³o
-    u= 6.4;
-    %if t>T/2 u=70; end
-    [tx,x] = RKIV(func, t, t+h, MSHDNS, x0, u);
-    x0 = x(length(x),:)';
-    t = t+h;
-    %Do wywalenia
+for i=1:length(T)-1
+    [tx,x] = RKIV(func, T(i), T(i+1), MSHDNS, x0, U(i));
+    x0 = x(end,:)';
+    
+    %Rysowanie
     subplot(2,1,1);
     hold on;
     plot(tx,x(:,1),'g');% pause(0.1);
@@ -23,11 +20,11 @@ while(t<=T-h)
     hold on;
     plot(tx,x(:,3));
 end
+%Opisywanie osi
 subplot(2,1,1);
 grid;
 legend('polozenie','predkosc');
 subplot(2,1,2);
 legend('prad');
 grid;
-output=0;
 end
